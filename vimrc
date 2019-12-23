@@ -132,5 +132,5 @@ let g:user_emmet_leader_key='<C-Z>'
 
 let g:yapf_style = "google"
 
-let g:python3_host_prog = '$HOME/miniconda3/envs/nvim/bin/python'
+let g:python3_host_prog = $HOME . '/miniconda3/envs/nvim/bin/python'
 let $VIRTUAL_ENV=$CONDA_PREFIX

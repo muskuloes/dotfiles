@@ -7,5 +7,5 @@ alias f="fzf --preview 'bat --style=numbers --color=always {}'"
 alias vim="nvim"
 alias r="R"
 
-eval /home/muskuloes/miniconda3/bin/conda "shell.fish" "hook" $argv | source
+eval $HOME/miniconda3/bin/conda "shell.fish" "hook" $argv | source
 

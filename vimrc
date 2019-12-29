@@ -126,6 +126,9 @@ let col = col('.') - 1
 return !col || getline('.')[col - 1]  =~ '\s'
 endfunction"}}}
 
+let g:deoplete#sources#rust#racer_binary=systemlist('which racer')[0]
+let g:deoplete#sources#rust#rust_source_path=systemlist('rustc --print sysroot')[0] . '/lib/rustlib/src/rust/src'
+
 let g:user_emmet_install_global = 0
 autocmd FileType html,css,htmldjango EmmetInstall
 let g:user_emmet_leader_key='<C-Z>'

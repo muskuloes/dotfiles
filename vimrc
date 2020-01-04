@@ -126,14 +126,25 @@ let col = col('.') - 1
 return !col || getline('.')[col - 1]  =~ '\s'
 endfunction"}}}
 
+" deoplete-rust settings
 let g:deoplete#sources#rust#racer_binary=systemlist('which racer')[0]
 let g:deoplete#sources#rust#rust_source_path=systemlist('rustc --print sysroot')[0] . '/lib/rustlib/src/rust/src'
 
+" emmet-vim settings
 let g:user_emmet_install_global = 0
 autocmd FileType html,css,htmldjango EmmetInstall
 let g:user_emmet_leader_key='<C-Z>'
 
+" deoplete-jedi python settings
 let g:yapf_style = "google"
-
 let g:python3_host_prog = $HOME . '/miniconda3/envs/nvim/bin/python'
 let $VIRTUAL_ENV=$CONDA_PREFIX
+
+" Nvim-R settings
+let R_assign = 2
+let R_notmuxconf = 1
+" let R_show_args = 1
+let R_in_buffer = 0
+" let R_tmux_close = 0
+let R_source = $HOME . '/.vim/plugged/Nvim-R/R/tmux_split.vim'
+let R_tmux_title = 'automatic'

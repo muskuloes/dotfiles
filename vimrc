@@ -58,6 +58,7 @@ set backspace=indent,eol,start
 set showbreak=↪\
 set listchars=tab:→\ ,eol:↲,nbsp:␣,trail:•,extends:⟩,precedes:⟨
 set updatetime=100
+set mouse=a
 
 let g:airline_theme='base16'
 
@@ -143,8 +144,6 @@ let $VIRTUAL_ENV=$CONDA_PREFIX
 " Nvim-R settings
 let R_assign = 2
 let R_notmuxconf = 1
-" let R_show_args = 1
 let R_in_buffer = 0
-" let R_tmux_close = 0
 let R_source = $HOME . '/.vim/plugged/Nvim-R/R/tmux_split.vim'
 let R_tmux_title = 'automatic'

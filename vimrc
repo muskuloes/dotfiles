@@ -3,13 +3,8 @@ let maplocalleader ="\<SPACE>"
 
 
 call plug#begin()
-Plug 'autozimu/LanguageClient-neovim', {
-    \ 'branch': 'next',
-    \ 'do': 'bash install.sh',
-    \ }
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-Plug 'deoplete-plugins/deoplete-jedi'
-Plug 'sebastianmarkow/deoplete-rust'
+Plug 'racer-rust/vim-racer'
+Plug 'rust-lang/rust.vim'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'scrooloose/nerdcommenter'
@@ -19,23 +14,25 @@ Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-surround'
+Plug 'dense-analysis/ale'
 Plug 'tpope/vim-fugitive'
 Plug 'junegunn/fzf.vim'
 Plug 'xolox/vim-misc'
 Plug 'jiangmiao/auto-pairs'
 Plug 'morhetz/gruvbox'
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  }
+Plug 'xuhdev/vim-latex-live-preview', { 'for': 'tex' }
 Plug 'ryanoasis/vim-devicons'
 Plug 'mattn/emmet-vim'
 Plug 'neomake/neomake'
 Plug 'jalvesaq/Nvim-R'
 Plug 'gaalcaras/ncm-R'
 Plug 'chrisbra/csv.vim'
-Plug 'mindriot101/vim-yapf'
 Plug 'cespare/vim-toml'
 Plug 'prettier/vim-prettier', {
-  \ 'do': 'yarn install',
-  \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'yaml', 'html'] }
+      \ 'do': 'yarn install',
+      \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'yaml', 'html'] }
+Plug 'mattn/webapi-vim'
 " Plug 'edkolev/tmuxline.vim' generated status line
 call plug#end()
 
@@ -59,6 +56,7 @@ set showbreak=↪\
 set listchars=tab:→\ ,eol:↲,nbsp:␣,trail:•,extends:⟩,precedes:⟨
 set updatetime=100
 set mouse=a
+set completeopt=menu,menuone,preview,noselect,noinsert
 
 let g:airline_theme='base16'
 
@@ -69,9 +67,6 @@ augroup numbertoggle
   autocmd BufEnter NERD_* setlocal nonumber norelativenumber
   autocmd BufEnter,TermOpen,TermEnter,TermLeave term://* setlocal nonumber norelativenumber
 augroup END
-
-autocmd BufWritePre *.rs :call LanguageClient_textDocument_formatting()
-autocmd BufWritePre *.py :call Yapf()
 
 " Nerd commenter
 let g:NERDSpaceDelims = 1
@@ -104,42 +99,21 @@ nnoremap <silent><f9> :w<cr>:source %<cr>
 nnoremap <c-p> :FZF<cr>
 nnoremap <c-f> :Ag<cr>
 
-let g:deoplete#enable_at_startup = 1
-
-let g:LanguageClient_serverCommands = {
-    \ 'rust': ['~/.cargo/bin/rustup', 'run', 'stable', 'rls'],
-    \ 'python': ['/usr/local/bin/pyls'],
-    \ 'sh': ['bash-language-server', 'start'],
-    \ }
-nnoremap <F5> :call LanguageClient_contextMenu()<CR>
-" Or map each action separately
-nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
-nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
-nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-inoremap <silent><expr> <TAB>
+inoremap <expr><s-tab> pumvisible() ? "\<c-p>" : "\<c-h>"
+inoremap <expr> <cr> pumvisible() ? "\<c-y>" : "\<c-g>u\<cr>"
+inoremap <silent><expr> <tab>
 \ pumvisible() ? "\<C-n>" :
 \ <SID>check_back_space() ? "\<TAB>" :
-\ deoplete#manual_complete()
+\ "\<c-\><c-o>:ALEComplete<cr>"
 function! s:check_back_space() abort "{{{
 let col = col('.') - 1
 return !col || getline('.')[col - 1]  =~ '\s'
 endfunction"}}}
 
-" deoplete-rust settings
-let g:deoplete#sources#rust#racer_binary=systemlist('which racer')[0]
-let g:deoplete#sources#rust#rust_source_path=systemlist('rustc --print sysroot')[0] . '/lib/rustlib/src/rust/src'
-
 " emmet-vim settings
 let g:user_emmet_install_global = 0
 autocmd FileType html,css,htmldjango EmmetInstall
 let g:user_emmet_leader_key='<C-Z>'
-
-" deoplete-jedi python settings
-let g:yapf_style = "google"
-let g:python3_host_prog = $HOME . '/miniconda3/envs/nvim/bin/python'
-let $VIRTUAL_ENV=$CONDA_PREFIX
 
 " Nvim-R settings
 let R_assign = 2
@@ -147,3 +121,25 @@ let R_notmuxconf = 1
 let R_in_buffer = 0
 let R_source = $HOME . '/.vim/plugged/Nvim-R/R/tmux_split.vim'
 let R_tmux_title = 'automatic'
+
+ let g:ale_rust_rls_executable = 'ra_lsp_server'
+
+let g:ale_fixers = {
+      \   'rust': ['rustfmt'],
+      \   'python': ['black'],
+      \   'yaml': ['prettier'],
+      \}
+let g:ale_linters = {
+      \'rust': ['rls', 'cargo'],
+      \'python': ['pyls'],
+      \}
+let g:ale_sign_error = "✗"
+let g:ale_sign_warning = "⚠"
+" let g:ale_completion_enabled = 1
+let g:ale_set_balloons = 1
+let g:ale_fix_on_save = 1
+let g:ale_lint_on_text_changed = 'never'
+let g:ale_lint_on_enter = 0
+let g:airline#extensions#ale#enabled = 1
+nmap <silent> <leader>f <Plug>(ale_go_to_definition)
+nmap <silent> <leader>k <Plug>(ale_hover)

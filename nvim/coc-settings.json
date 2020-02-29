@@ -1,0 +1,14 @@
+{
+  "suggest.autoTrigger": "trigger",
+  "diagnostic.errorSign": "✗",
+  "yaml.format.enable": true,
+  "python.formatting.provider":"black",
+  "languageserver": {
+      "bash": {
+        "command": "bash-language-server",
+        "args": ["start"],
+        "filetypes": ["sh"],
+        "ignoredRootPaths": ["~"]
+      }
+    }
+}

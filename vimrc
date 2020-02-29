@@ -3,7 +3,6 @@ let maplocalleader ="\<SPACE>"
 
 
 call plug#begin()
-Plug 'racer-rust/vim-racer'
 Plug 'rust-lang/rust.vim'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
@@ -14,7 +13,6 @@ Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-surround'
-Plug 'dense-analysis/ale'
 Plug 'tpope/vim-fugitive'
 Plug 'junegunn/fzf.vim'
 Plug 'xolox/vim-misc'
@@ -23,19 +21,15 @@ Plug 'morhetz/gruvbox'
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  }
 Plug 'xuhdev/vim-latex-live-preview', { 'for': 'tex' }
 Plug 'ryanoasis/vim-devicons'
-Plug 'mattn/emmet-vim'
 Plug 'neomake/neomake'
-Plug 'jalvesaq/Nvim-R'
-Plug 'gaalcaras/ncm-R'
 Plug 'chrisbra/csv.vim'
 Plug 'cespare/vim-toml'
-Plug 'prettier/vim-prettier', {
-      \ 'do': 'yarn install',
-      \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'yaml', 'html'] }
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'mattn/webapi-vim'
 " Plug 'edkolev/tmuxline.vim' generated status line
 call plug#end()
 
+" command! -nargs=0 Prettier :CocCommand prettier.formatFile
 filetype plugin on
 
 set background=dark
@@ -54,7 +48,7 @@ set rtp+=~/.fzf
 set backspace=indent,eol,start
 set showbreak=↪\
 set listchars=tab:→\ ,eol:↲,nbsp:␣,trail:•,extends:⟩,precedes:⟨
-set updatetime=100
+set updatetime=1000
 set mouse=a
 set completeopt=menu,menuone,preview,noselect,noinsert
 
@@ -104,42 +98,61 @@ inoremap <expr> <cr> pumvisible() ? "\<c-y>" : "\<c-g>u\<cr>"
 inoremap <silent><expr> <tab>
 \ pumvisible() ? "\<C-n>" :
 \ <SID>check_back_space() ? "\<TAB>" :
-\ "\<c-\><c-o>:ALEComplete<cr>"
+\ coc#refresh()
 function! s:check_back_space() abort "{{{
 let col = col('.') - 1
 return !col || getline('.')[col - 1]  =~ '\s'
 endfunction"}}}
+" Use `[g` and `]g` to navigate diagnostics
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
 
-" emmet-vim settings
-let g:user_emmet_install_global = 0
-autocmd FileType html,css,htmldjango EmmetInstall
-let g:user_emmet_leader_key='<C-Z>'
+" GoTo code navigation.
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
 
-" Nvim-R settings
-let R_assign = 2
-let R_notmuxconf = 1
-let R_in_buffer = 0
-let R_source = $HOME . '/.vim/plugged/Nvim-R/R/tmux_split.vim'
-let R_tmux_title = 'automatic'
+" Use K to show documentation in preview window.
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
 
- let g:ale_rust_rls_executable = 'ra_lsp_server'
+" Add `:Format` command to format current buffer.
+command! -nargs=0 Format :call CocAction('format')
 
-let g:ale_fixers = {
-      \   'rust': ['rustfmt'],
-      \   'python': ['black'],
-      \   'yaml': ['prettier'],
-      \}
-let g:ale_linters = {
-      \'rust': ['rls', 'cargo'],
-      \'python': ['pyls'],
-      \}
-let g:ale_sign_error = "✗"
-let g:ale_sign_warning = "⚠"
-" let g:ale_completion_enabled = 1
-let g:ale_set_balloons = 1
-let g:ale_fix_on_save = 1
-let g:ale_lint_on_text_changed = 'never'
-let g:ale_lint_on_enter = 0
-let g:airline#extensions#ale#enabled = 1
-nmap <silent> <leader>f <Plug>(ale_go_to_definition)
-nmap <silent> <leader>k <Plug>(ale_hover)
+" Add `:Fold` command to fold current buffer.
+command! -nargs=? Fold :call     CocAction('fold', <f-args>)
+
+" Add `:OR` command for organize imports of the current buffer.
+command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
+
+" Add (Neo)Vim's native statusline support.
+" NOTE: Please see `:h coc-status` for integrations with external plugins that
+" provide custom statusline: lightline.vim, vim-airline.
+set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
+
+" Mappings using CoCList:
+" Show all diagnostics.
+nnoremap <silent> <space>a  :<C-u>CocList diagnostics<cr>
+" Manage extensions.
+nnoremap <silent> <space>e  :<C-u>CocList extensions<cr>
+" Show commands.
+nnoremap <silent> <space>c  :<C-u>CocList commands<cr>
+" Find symbol of current document.
+nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
+" Search workspace symbols.
+nnoremap <silent> <space>s  :<C-u>CocList -I symbols<cr>
+" Do default action for next item.
+nnoremap <silent> <space>j  :<C-u>CocNext<CR>
+" Do default action for previous item.
+nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
+" Resume latest coc list.
+nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
+
+let g:rustfmt_autosave = 1

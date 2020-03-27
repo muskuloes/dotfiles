@@ -18,7 +18,6 @@ Plug 'junegunn/fzf.vim'
 Plug 'xolox/vim-misc'
 Plug 'jiangmiao/auto-pairs'
 Plug 'morhetz/gruvbox'
-Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  }
 Plug 'xuhdev/vim-latex-live-preview', { 'for': 'tex' }
 Plug 'ryanoasis/vim-devicons'
 Plug 'neomake/neomake'
@@ -26,6 +25,8 @@ Plug 'chrisbra/csv.vim'
 Plug 'cespare/vim-toml'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'mattn/webapi-vim'
+Plug 'jalvesaq/Nvim-R'
+Plug 'airblade/vim-rooter'
 " Plug 'edkolev/tmuxline.vim' generated status line
 call plug#end()
 
@@ -59,7 +60,7 @@ augroup numbertoggle
   autocmd BufEnter,FocusGained,InsertLeave * set number relativenumber
   autocmd BufLeave,FocusLost,InsertEnter * set norelativenumber
   autocmd BufEnter NERD_* setlocal nonumber norelativenumber
-  autocmd BufEnter,TermOpen,TermEnter,TermLeave term://* setlocal nonumber norelativenumber
+  " autocmd BufEnter,TermOpen,TermEnter,TermLeave term://* setlocal nonumber norelativenumber
 augroup END
 
 " Nerd commenter
@@ -91,7 +92,6 @@ nnoremap tl :tablast<cr>
 nnoremap td :tabclose<cr>
 nnoremap <silent><f9> :w<cr>:source %<cr>
 nnoremap <c-p> :FZF<cr>
-nnoremap <c-f> :Ag<cr>
 
 inoremap <expr><s-tab> pumvisible() ? "\<c-p>" : "\<c-h>"
 inoremap <expr> <cr> pumvisible() ? "\<c-y>" : "\<c-g>u\<cr>"
@@ -156,3 +156,6 @@ nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
 nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
 
 let g:rustfmt_autosave = 1
+let g:coc_filetype_map = {
+  \ 'htmldjango': 'html',
+  \ }

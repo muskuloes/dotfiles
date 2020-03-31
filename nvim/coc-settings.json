@@ -1,6 +1,5 @@
 {
-  "rust-analyzer.serverPath": "~/.cargo/bin/rust-analyzer",
-  "suggest.autoTrigger": "trigger",
+  "suggest.autoTrigger": "always",
   "diagnostic.errorSign": "✗",
   "yaml.format.enable": true,
   "python.formatting.provider": "black",

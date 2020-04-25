@@ -101,6 +101,7 @@ nnoremap tl :tablast<cr>
 nnoremap td :tabclose<cr>
 nnoremap <silent><f9> :w<cr>:source %<cr>
 nnoremap <silent> <c-p> :<C-u>FZF<cr>
+nnoremap <silent> <c-f> :<C-u>RG<cr>
 map <c-leftmouse> <nop>
 
 inoremap <expr><s-tab> pumvisible() ? "\<c-p>" : "\<c-h>"
@@ -169,3 +170,12 @@ let g:rustfmt_autosave = 1
 let g:coc_filetype_map = {
   \ 'htmldjango': 'html',
   \ }
+let g:fzf_preview_window = 'right:60%'
+function! RipgrepFzf(query, fullscreen)
+  let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case %s || true'
+  let initial_command = printf(command_fmt, shellescape(a:query))
+  let reload_command = printf(command_fmt, '{q}')
+  let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command]}
+  call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
+endfunction
+command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)

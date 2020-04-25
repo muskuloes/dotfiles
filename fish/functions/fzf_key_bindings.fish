@@ -1,0 +1,1 @@
+/home/muskuloes/.fzf/shell/key-bindings.fish

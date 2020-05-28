@@ -6,9 +6,10 @@ call plug#begin()
 Plug 'rust-lang/rust.vim'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'scrooloose/nerdcommenter'
-Plug 'scrooloose/nerdtree'
+Plug 'preservim/nerdcommenter'
+Plug 'preservim/nerdtree'
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+" Plug 'liuchengxu/nerdtree-dash'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'airblade/vim-gitgutter'
@@ -25,18 +26,18 @@ Plug 'chrisbra/csv.vim'
 Plug 'cespare/vim-toml'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'mattn/webapi-vim'
-Plug 'jalvesaq/Nvim-R'
 Plug 'airblade/vim-rooter'
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
 " Plug 'edkolev/tmuxline.vim' generated status line
+Plug 'jalvesaq/Nvim-R'
 Plug 'ncm2/ncm2'
 Plug 'roxma/nvim-yarp'
-Plug 'jalvesaq/Nvim-R'
 Plug 'gaalcaras/ncm-R'
 " Vim 8 only
 if !has('nvim')
     Plug 'roxma/vim-hug-neovim-rpc'
 endif
+Plug 'junegunn/goyo.vim'
 call plug#end()
 
 " command! -nargs=0 Prettier :CocCommand prettier.formatFile
@@ -61,6 +62,8 @@ set listchars=tab:→\ ,eol:↲,nbsp:␣,trail:•,extends:⟩,precedes:⟨
 set updatetime=1000
 set mouse=a
 set completeopt=menu,menuone,preview,noselect,noinsert
+set cursorline
+set cursorcolumn
 
 let g:airline_theme='base16'
 
@@ -146,7 +149,7 @@ command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organize
 " Add (Neo)Vim's native statusline support.
 " NOTE: Please see `:h coc-status` for integrations with external plugins that
 " provide custom statusline: lightline.vim, vim-airline.
-set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
+" set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 
 " Mappings using CoCList:
 " Show all diagnostics.
@@ -179,3 +182,13 @@ function! RipgrepFzf(query, fullscreen)
   call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
 endfunction
 command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
+
+" Nvim-R settings
+let R_assign = 2
+let R_notmuxconf = 1
+let R_in_buffer = 0
+let R_source = $HOME . '/.vim/plugged/Nvim-R/R/tmux_split.vim'
+let R_tmux_title = 'automatic'
+let R_close_term = 1
+let R_hl_term = 1
+" autocmd BufLeave *.r :normal <LocalLeader>rq
